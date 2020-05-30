@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <vector>
+#define int long long
 #define N 200002
 using namespace std;
 struct star{
@@ -11,7 +12,7 @@ struct star{
 };
 vector<star> s[N];
 vector<int> v[N];
-int n,i,j,f[2][N],c[N],ans;
+int n,m,i,j,f[2][N],c[N],ans;
 int read()
 {
     char c=getchar();
@@ -42,18 +43,19 @@ int find(int op,int x)
     if(f[op][x]!=x) f[op][x]=find(op,f[op][x]);
     return f[op][x];
 }
-int main()
+signed main()
 {
     n=read();
     for(i=1;i<=n;i++){
         int h=read();
         v[h].push_back(i);
     }
-    for(i=1;i<=n;i++){
+    m=read();
+    for(i=1;i<=m;i++){
         int x=read(),y=read(),w=read();
         s[y].push_back(star(x,w));
     }
-    for(i=1;i<=n+1;i++) f[0][i]=f[1][i]=1;
+    for(i=1;i<=n+1;i++) f[0][i]=f[1][i]=i;
     for(i=1;i<=n;i++){
         for(j=0;j<s[i].size();j++){
             int x=s[i][j].x,w=s[i][j].w;
@@ -73,4 +75,6 @@ int main()
             if(f3!=f4) f[1][f3]=f4;
         }
     }
+    cout<<ans<<endl;
+    return 0;
 }
