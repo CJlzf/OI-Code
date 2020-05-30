@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <vector>
+#define  M K
 #define int long long
 #define N 200002
 using namespace std;
