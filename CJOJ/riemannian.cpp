@@ -1,10 +1,12 @@
 #include <iostream>
 #include <cstdio>
 #include <cstring>
+#include <algorithm>
+#define N 1200002
 using namespace std;
 const long long mod=998244353;
 int T,i;
-long long ansa,ansb,n;
+long long ansa,ansb,n[N];
 long long read()
 {
     char c=getchar();
@@ -19,7 +21,7 @@ long long read()
 struct Matrix{
     int n,m;
     long long a[4][4];
-}s,t;
+}s,t,r[65];
 Matrix operator * (Matrix a,Matrix b)
 {
     Matrix c;
@@ -34,12 +36,11 @@ Matrix operator * (Matrix a,Matrix b)
 }
 Matrix poww(Matrix a,long long b)
 {
-    Matrix ans=a,base=a;
-    b--;
+    int cnt=0;
+    Matrix ans=s;
     while(b){
-	    if(b&1) ans=ans*base;
-	    base=base*base;
-	    b>>=1;
+	    if(b&1) ans=ans*r[cnt];
+	    b>>=1;cnt++;
     }
     return ans;
 }
@@ -51,11 +52,15 @@ signed main()
     t.n=t.m=3;
     t.a[1][1]=t.a[1][2]=t.a[3][1]=2;
     t.a[2][1]=t.a[3][2]=t.a[3][3]=1;
+    r[0]=t;
+    for(i=1;i<=64;i++) r[i]=r[i-1]*r[i-1];
     for(i=1;i<=T;i++) n[i]=read();
     sort(n+1,n+T+1);
     for(i=1;i<=T;i++){
-        int k=n[i]-n[i-1];
-
+        long long k=n[i]-n[i-1];
+        if(k>0) s=poww(t,k);
+        ansa^=s.a[1][2];
+        ansb^=s.a[1][1];
     }
     printf("%lld %lld\n",ansa,ansb);
     return 0;
