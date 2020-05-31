@@ -74,6 +74,7 @@ void change2(int p,int l,int r,int x)
 }
 int main()
 {
+    //aaaa
     n=read();m=read();
     for(i=1;i<=n;i++) a[i]=read(),vis[a[i]]=1;
     a[0]=T;
