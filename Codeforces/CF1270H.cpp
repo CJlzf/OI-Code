@@ -67,6 +67,7 @@ void change2(int p,int l,int r,int x)
         return;
     }
     int mid=(l+r)/2;
+    spread(p);
     if(x<=mid) change2(p*2,l,mid,x);
     else change2(p*2+1,mid+1,r,x);
     update(p);
@@ -78,7 +79,6 @@ int main()
     a[0]=T;
     for(i=0;i<=n;i++) change1(1,0,T,min(a[i],a[i+1]),max(a[i],a[i+1])-1,1);
     build(1,0,T);
-    cout<<t[1].dat<<endl;
     for(i=1;i<=m;i++){
         int x=read(),y=read();
         change1(1,0,T,min(a[x-1],a[x]),max(a[x-1],a[x]),-1);
