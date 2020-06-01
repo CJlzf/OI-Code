@@ -4,7 +4,7 @@
 #include <queue>
 #define N 1000002
 using namespace std;
-const int inf=1<<30;
+const long long inf=1LL<<50;
 struct node{
     int w,id;
     node(int _w,int _id){
@@ -15,7 +15,8 @@ struct node{
     }
 };
 priority_queue<node> A1,A2,B1,B2,AB;
-int T,n,k,l,flow,i,a[N],b[N],vis[N],ans;
+int T,n,k,l,flow,i,a[N],b[N],vis[N];
+long long ans;
 int read()
 {
     char c=getchar();
@@ -27,8 +28,10 @@ int read()
     }
     return w;
 }
-int main()
+signed main()
 {
+	freopen("sequence.in","r",stdin);
+	freopen("sequence.out","w",stdout);
     T=read();
     while(T--){
         while(A1.size()) A1.pop();
@@ -46,7 +49,10 @@ int main()
             int B=B1.top().w,pb=B1.top().id;
             ans+=A+B;
             vis[pa]|=1;vis[pb]|=2;
+            A1.pop();B1.pop();
         }
+        while(A1.size()) A1.pop();
+        while(B1.size()) B1.pop();
         for(i=1;i<=n;i++){
             if(vis[i]==2) A1.push(node(a[i],i));
             if(vis[i]==0||vis[i]==2) A2.push(node(a[i],i));
@@ -57,16 +63,17 @@ int main()
         }
         for(i=k-l+1;i<=k;i++){
             while(A1.size()&&vis[A1.top().id]!=2) A1.pop();
-            while(A2.size()&&(vis[A1.top().id]&1)) A2.pop();
+            while(A2.size()&&(vis[A2.top().id]&1)) A2.pop();
             while(B1.size()&&vis[B1.top().id]!=1) B1.pop();
             while(B2.size()&&(vis[B2.top().id]&2)) B2.pop();
             while(AB.size()&&vis[AB.top().id]) AB.pop();
             if(flow){
                 flow--;
-                int A=A1.top().w,pa=A1.top().id;
-                int B=B1.top().w,pb=B1.top().id;
-                ans+=A+B;
+                int pa=A2.top().id,pb=B2.top().id;
+                ans+=a[pa]+b[pb];
                 vis[pa]|=1;vis[pb]|=2;
+                if(vis[pa]!=3) B1.push(node(b[pa],pa));
+                if(vis[pb]!=3) A1.push(node(a[pb],pb));
                 if(pa==pb) flow++;
                 else{
                     if(vis[pa]==3) flow++;
@@ -74,12 +81,13 @@ int main()
                 }
             }
             else{
-                int ans1=0,ans2=0,ans3=0,s1=0,s2=0;
+                long long ans1=0,ans2=0,ans3=0;
+				int s1=0,s2=0;
                 if(!AB.empty()) ans1=AB.top().w;
                 if(!B1.empty()&&!A2.empty()){
                     int pa=A2.top().id,pb=B1.top().id;
                     ans2=a[pa]+b[pb];
-                    if(vis[pa]==2) s1=1;    
+                    if(vis[pa]==2) s1=1;
                 }
                 if(!A1.empty()&&!B2.empty()){
                     int pa=A1.top().id,pb=B2.top().id;
@@ -92,12 +100,14 @@ int main()
                     if(s1==1){
                         int pa=A2.top().id,pb=B1.top().id;
                         vis[pa]|=1;vis[pb]|=2;
-                        flow++; 
+                        if(vis[pa]!=3) B1.push(node(b[pa],pa));
+                        else flow++;
                     }
                     else{
                         int pa=A1.top().id,pb=B2.top().id;
                         vis[pa]|=1;vis[pb]|=2;
-                        flow++;
+                        if(vis[pb]!=3) A1.push(node(a[pb],pb));
+                        else flow++;
                     }
                 }
                 else{
@@ -117,10 +127,10 @@ int main()
                         if(vis[pb]!=3) A1.push(node(a[pb],pb));
                         else flow++;
                     }
-                }
+                }	
             }
         }
-        printf("%d\n",ans);
+        printf("%lld\n",ans);
     }
     return 0;
 }
