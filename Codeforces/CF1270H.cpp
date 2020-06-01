@@ -29,7 +29,7 @@ void update(int p)
 }
 void spread(int p)
 {
-    if(t[p].add){
+    if(t[p].add!=0){
         t[p*2].dat+=t[p].add;t[p*2].add+=t[p].add;
         t[p*2+1].dat+=t[p].add;t[p*2+1].add+=t[p].add;
         t[p].add=0;
@@ -38,11 +38,12 @@ void spread(int p)
 void build(int p,int l,int r)
 {
     if(l==r){
-        if(vis[l]) t[p].cnt=1,t[p].dat=1;
-        else t[p].dat=inf;
+        if(vis[l]) t[p].cnt=1,t[p].dat=t[p].add;
+        else t[p].cnt=0,t[p].dat=inf;
         return;
     }
     int mid=(l+r)/2;
+    spread(p);
     build(p*2,l,mid);
     build(p*2+1,mid+1,r);
     update(p);
@@ -62,7 +63,7 @@ void change1(int p,int l,int r,int ql,int qr,int x)
 void change2(int p,int l,int r,int x)
 {
     if(l==r){
-        if(vis[l]) t[p].cnt=1,t[p].dat=1;
+        if(vis[l]) t[p].cnt=1,t[p].dat=t[p].add;
         else t[p].cnt=0,t[p].dat=inf;
         return;
     }
@@ -74,7 +75,6 @@ void change2(int p,int l,int r,int x)
 }
 int main()
 {
-    //aaaa
     n=read();m=read();
     for(i=1;i<=n;i++) a[i]=read(),vis[a[i]]=1;
     a[0]=T;
@@ -82,13 +82,15 @@ int main()
     build(1,0,T);
     for(i=1;i<=m;i++){
         int x=read(),y=read();
-        change1(1,0,T,min(a[x-1],a[x]),max(a[x-1],a[x]),-1);
-        change1(1,0,T,min(a[x+1],a[x]),max(a[x+1],a[x]),-1);
-        vis[a[x]]=0;vis[y]=1;
-        change2(1,0,T,a[x]);change2(1,0,T,y);
+        change1(1,0,T,min(a[x-1],a[x]),max(a[x-1],a[x])-1,-1);
+        change1(1,0,T,min(a[x+1],a[x]),max(a[x+1],a[x])-1,-1);
+        vis[a[x]]=0;
+        change2(1,0,T,a[x]);
         a[x]=y;
-        change1(1,0,T,min(a[x-1],a[x]),max(a[x-1],a[x]),1);
-        change1(1,0,T,min(a[x+1],a[x]),max(a[x+1],a[x]),1);
+        change1(1,0,T,min(a[x-1],a[x]),max(a[x-1],a[x])-1,1);
+        change1(1,0,T,min(a[x+1],a[x]),max(a[x+1],a[x])-1,1);
+        vis[y]=1;
+        change2(1,0,T,y);
         if(t[1].dat==1) printf("%d\n",t[1].cnt);
         else puts("1");
     }
