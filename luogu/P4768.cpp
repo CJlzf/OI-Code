@@ -3,18 +3,23 @@
 #include <cstring>
 #include <queue>
 #include <algorithm>
+#include <vector>
 #define N 200002
 #define M 400002
 using namespace std;
+const int inf=1<<30;
 struct Edge{
-    int u,v,w,h;
+    int u,v,l,h;
 }e[M];
-struct SegmentTree{
-    int l,r,fa;
-}t[N*40];
+struct event{
+    int p,x;
+    event(int _p,int _x){
+        p=_p;x=_x;
+    }
+};
+vector<event> fa[N],minx[N];
 int head[N],ver[M*2],nxt[M*2],edge[M*2],l;
-int T,n,m,q,k,s,i,v0,p0,dis[N],dep[N],w[N],cnt;
-bool in[N];
+int t,n,m,q,k,s,ans,i,dis[N];
 int read()
 {
     char c=getchar();
@@ -42,6 +47,7 @@ void Dijkstra()
     dis[1]=0;
     while(!q.empty()){
         int x=q.top().second,d=-q.top().first;
+        q.pop();
         if(d!=dis[x]) continue;
         for(int i=head[x];i;i=nxt[i]){
             int y=ver[i];
@@ -52,60 +58,28 @@ void Dijkstra()
         }
     }
 }
-int build(int l,int r)
-{
-	int p=++cnt,mid=(l+r)/2;
-	if(l==r){
-		t[p].fa=l;
-		return p;
-	}
-	t[p].l=build(1,mid);
-	t[p].r=build(mid+1,r);
-	return p;
-}
-int query(int p,int l,int r,int v,int root)
-{
-	if(l==r){
-		if(t[p].fa==l) return p;
-		return query(root,1,n,t[p].fa,root);
-	}
-	int mid=(l+r)/2;
-	if(v<=mid) return query(t[p].l,l,mid,v,root);
-	else return query(t[p].r,mid+1,r,v,root);
-}
-int insert(int pre,int l,int r,int f1,int f2)
-{
-	int p=++cnt,mid=(l+r)/2;
-	t[p]=t[pre];
-	if(l==r){
-		t[p].fa=f1;
-		return p;
-	}
-	if(f2<=mid) t[p].l=insert(t[pre].l,l,mid,f1,f2);
-	else t[p].r=insert(t[pre].r,mid+1,r,f1,f2);
-	return p;
-}
 int my_comp(const Edge &x,const Edge &y)
 {
-    return x.w>y.w;
+    return x.h>y.h;
 }
 int main()
 {
-    T=read();
-    while(T--){
+    t=read();
+    while(t--){
         n=read();m=read();
         for(i=1;i<=m;i++){
-            e[i].u=read();e[i].v=read();e[i].w=read();e[i].h=read();
-            insert(e[i].u,e[i].v,e[i].w);
-            insert(e[i].v,e[i].u,e[i].w);
+            e[i].u=read();e[i].v=read();e[i].l=read();e[i].h=read();
+            insert(e[i].u,e[i].v,e[i].l);
+            insert(e[i].v,e[i].u,e[i].l);
         }
-        q=read();k=read();s=read();
         Dijkstra();
         sort(e+1,e+m+1,my_comp);
-        for(i=1;i<=m;i++) w[i]=e[i].w;
-        sort(w+1,w+n+1);
-        int T=unique(w+1,w+n+1)-w;
-        w[T+1]=s+1;
-        
+        for(i=1;i<=n;i++){
+            fa[i].push_back(event(inf,i));
+            minx[i].push_back(event(inf,dis[i]));
+        }
+        for(i=m;i>=1;i--){
+
+        }
     }
 }
